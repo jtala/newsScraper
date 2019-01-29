@@ -9,7 +9,7 @@ var logger = require("morgan");
 var db = require("./models");
 
 
-var PORT = 3000;
+var PORT = 3000 || process.env.PORT;
 var app = express();
 
 // Mongo Setup
@@ -29,8 +29,8 @@ else{
 }
 
 /* var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/newsScraper";
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true }); */
-
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true }); 
+ */
 // Handlebars setup
 var exphbs = require("express-handlebars");
 
