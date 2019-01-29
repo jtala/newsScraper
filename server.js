@@ -6,6 +6,8 @@ var cheerio = require("cheerio");
 var mongoose = require("mongoose");
 var logger = require("morgan");
 
+var db = require("./models");
+
 
 var PORT = 3000;
 var app = express();
@@ -25,8 +27,6 @@ var exphbs = require("express-handlebars");
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
-/* var db = require("/models");
- */
 
 
 
@@ -41,25 +41,79 @@ app.get("/scrape", (req,res)=>{
 
     var $ = cheerio.load(response.data);
 
-    var check = $(".grid-tz__title .grid-tz__title--link").text();
-    console.log(check);
-
-    
     $(".grid-tz__title .grid-tz__title--link").each((i,element)=>{
     var result = {};
     
     result.title = $(element).text();
-    //console.log(result.title);
+    result.link = "https://www.technologyreview.com"+  $(element).attr("href");
+    
+    
+     db.Column.create(result)
+        .then(function(dbColumn) {
+            console.log(dbColumn);
+        })
+        .catch(function(err) {
+          // If an error occurred, log it
+          console.log(err);
+        });
+    });
 
-    console.log(result);
 
+});
+
+res.send("Scrape completed, now go back to the home page!");
+
+});
+
+
+app.get("/articles", (req,res)=>{
+    db.Column.find()
+
+    .then((dbColumn)=>{
+    res.json(dbColumn);
+    })
+
+    .catch((err)=>{
+    res.json(err);
     });
 });
 
-res.send("Scrape completed");
-});
 
+app.get("/articles/:id", function(req, res) {
+    
+    db.Column.findOne({ _id: req.params.id })
+      .populate("note")
+      .then(function(dbArticle) {
+        
+        res.json(dbArticle);
+      })
+      .catch(function(err) {
+        // If an error occurred, send it to the client
+        res.json(err);
+      });
+  });
 
+  app.post("/articles/:id", function(req, res) {
+    db.Note.create(req.body)
+      .then(function(dbNote) {
+       
+        return db.Column.findOneAndUpdate({ _id: req.params.id }, { note: dbNote._id }, { new: true });
+      })
+      .then(function(dbArticle) {
+        res.json(dbArticle);
+      })
+      .catch(function(err) {
+        res.json(err);
+      });
+  });
+
+app.delete("/articles/:id", function(req, res) {
+
+    db.Note.remove({id: [req.params.id]});
+       
+  });
+
+  
 
 
 app.listen(PORT,()=>{
