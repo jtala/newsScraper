@@ -18,8 +18,18 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/newsScraper";
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true });
+var databaseuri = "mongodb://localhost/newsScraper";
+
+if (process.env.MONGODB_URI){
+    mongoose.connect(process.env.MONGODB_URI);
+}
+
+else{
+    mongoose.connect(databaseuri);
+}
+
+/* var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/newsScraper";
+mongoose.connect(MONGODB_URI, { useNewUrlParser: true }); */
 
 // Handlebars setup
 var exphbs = require("express-handlebars");
