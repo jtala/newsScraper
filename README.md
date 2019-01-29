@@ -3,7 +3,7 @@ News Scraper is an application that will show you in real time the most current 
 
 ## Live Deployment
 
-https://jtalafriendfinder.herokuapp.com/
+https://arcane-gorge-58215.herokuapp.com/
 ## Getting Started
 
 <img src="assets/imgs/blankstart1.JPG" alt="blank" width="80%" height="80%">
