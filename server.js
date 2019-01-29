@@ -40,15 +40,16 @@ app.get("/scrape", (req,res)=>{
     axios.get("https://www.technologyreview.com/").then((response)=>{
 
     var $ = cheerio.load(response.data);
-    /* var check = $(".grid-tz__title .grid-tz__title--link").text();
-    console.log(check); */
 
+    var check = $(".grid-tz__title .grid-tz__title--link").text();
+    console.log(check);
+
+    
     $(".grid-tz__title .grid-tz__title--link").each((i,element)=>{
-
-
     var result = {};
-
-    result.title = $(this).text();
+    
+    result.title = $(element).text();
+    //console.log(result.title);
 
     console.log(result);
 
